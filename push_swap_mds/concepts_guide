@@ -1,0 +1,508 @@
+# Push_Swap - Detailed Concept Guide
+
+## Table of Contents
+1. [Stacks Fundamentals](#stacks-fundamentals)
+2. [The Problem Space](#the-problem-space)
+3. [Implementation Strategy](#implementation-strategy)
+4. [42 Norm Compliance](#42-norm-compliance)
+5. [Common Issues & Solutions](#common-issues--solutions)
+6. [Step-by-Step Development](#step-by-step-development)
+
+---
+
+## Stacks Fundamentals
+
+### What is a Stack?
+
+A **stack** is a Last-In-First-Out (LIFO) data structure where:
+- Elements are added to the **top** (push)
+- Elements are removed from the **top** (pop)
+- You can only access the top element (peek)
+
+Think of a stack of plates: you add new plates on top, and remove from the top.
+
+```
+Adding to stack:     Removing from stack:
+
+[new] ← push         [new] ← pop (top)
+[b]                  [b] (now top)
+[a]                  [a]
+```
+
+### Stack Implementation in C (Linked List)
+
+We use a **linked list** because:
+- Dynamic size (no need to allocate huge array upfront)
+- Efficient push/pop operations (O(1) time)
+- Easy to manipulate (insert/remove without shifting)
+
+```c
+typedef struct s_node
+{
+    int             value;        // The number stored
+    struct s_node   *next;        // Pointer to next element
+}   t_node;
+
+typedef struct s_stack
+{
+    t_node  *top;                 // Points to top element
+    int     size;                 // Number of elements
+}   t_stack;
+```
+
+### Visual Representation
+
+```
+Stack: [5, 3, 1]  (5 is top, 1 is bottom)
+
+top → [5|next] → [3|next] → [1|NULL]
+      (node1)   (node2)   (node3)
+```
+
+**Key insight:** The linked list is "backwards" from how we visualize it. The `top` pointer points to the first node, which represents the top of the stack.
+
+---
+
+## The Problem Space
+
+### Understanding the Operations
+
+Each operation affects the stacks in specific ways:
+
+#### Swap Operations (sa, sb, ss)
+
+```
+BEFORE:     AFTER (sa):
+a: [5 3 1]  a: [3 5 1]
+b: [ ]      b: [ ]
+
+   top ↓       top ↓
+   [5] →       [3] →
+   [3] →       [5] →
+   [1]         [1]
+```
+
+**Implementation:** Swap the top two nodes by rearranging pointers.
+
+#### Push Operations (pa, pb)
+
+```
+BEFORE:     AFTER (pb):
+a: [5 3 1]  a: [3 1]
+b: [ ]      b: [5]
+
+   top ↓       top ↓    top ↓
+   [5] →       [3] →    [5] →
+   [3] →       [1]      NULL
+   [1]
+```
+
+**Implementation:** Pop from one stack, push to the other.
+
+#### Rotate Operations (ra)
+
+Moves the top element to the bottom, shifting everything up:
+
+```
+BEFORE:     AFTER (ra):
+a: [5 3 1]  a: [3 1 5]
+
+   top ↓       top ↓
+   [5] →       [3] →
+   [3] →       [1] →
+   [1]         [5]
+```
+
+**Implementation:** 
+1. Save the top node
+2. Move top to next element
+3. Attach saved node at the end
+
+#### Reverse Rotate Operations (rra)
+
+Moves the bottom element to the top, shifting everything down:
+
+```
+BEFORE:     AFTER (rra):
+a: [5 3 1]  a: [1 5 3]
+
+   top ↓       top ↓
+   [5] →       [1] →
+   [3] →       [5] →
+   [1]         [3]
+```
+
+**Implementation:**
+1. Find the last node and its predecessor
+2. Remove last node
+3. Make it the new top
+
+### The Sorting Challenge
+
+Goal: **Sort stack a in ascending order** (smallest at bottom, largest at top)
+
+Initial state: `a: [2 1 3]`, `b: []`
+Final state: `a: [1 2 3]`, `b: []`
+
+This is **non-trivial** because:
+- You can't directly sort; you can only swap, rotate, and move
+- There are infinite sequences of operations, but we want the shortest
+- The optimal strategy changes based on the data
+
+---
+
+## Implementation Strategy
+
+### Phase 1: Build Core Infrastructure
+
+**Files to create:**
+1. `push_swap.h` - Type definitions and prototypes
+2. `stack.c` - Stack operations (push, pop, peek, free)
+3. `main.c` - Entry point
+
+**Key functions:**
+```c
+t_stack *stack_new(void);           // Create empty stack
+int stack_push(t_stack *s, int v);  // Add element
+int stack_pop(t_stack *s);          // Remove & return
+void stack_free(t_stack *s);        // Free memory
+```
+
+### Phase 2: Input Parsing
+
+**Files:**
+- `parser.c`
+
+**Validation needed:**
+1. Check each argument is a valid integer
+   - Only digits (with optional +/- prefix)
+   - No letters, spaces in the number
+   
+2. Check for integer overflow
+   - INT_MIN = -2,147,483,648
+   - INT_MAX = 2,147,483,647
+   
+3. Check for duplicates
+   - Compare each number against all others
+   
+4. Store in array or directly push to stack a
+
+**Error handling:**
+```
+Invalid input → write "Error\n" to stderr → return(-1)
+```
+
+### Phase 3: Implement Operations
+
+**Files:**
+- `operations.c` - sa, sb, ss, pa, pb
+- `rotate.c` - ra, rb, rr, rra, rrb, rrr
+
+**Key principle:** Each operation must:
+1. Perform the stack manipulation
+2. Write the operation name to stdout
+3. Return (or void)
+
+Example:
+```c
+void op_sa(t_program *prog)
+{
+    swap_stack(prog->stack_a);  // Manipulate
+    write(1, "sa\n", 3);        // Output
+}
+```
+
+### Phase 4: Implement Sorting Algorithm
+
+**Files:**
+- `sort.c`
+
+**Strategy:**
+
+**For 2-3 elements:** Use hardcoded logic
+```
+2 elements: if [a b] where a > b, do sa
+3 elements: 6 possible orderings, hardcode each
+```
+
+**For larger sets:** Push elements to b in a controlled way, then push back sorted:
+```
+- Identify which elements to move to b
+- Move them in order
+- Push back in sorted order
+- Operations should be minimal
+```
+
+---
+
+## 42 Norm Compliance
+
+### Critical Rules to Remember
+
+#### 1. Functions Must Be ≤ 25 Lines
+
+**Bad:**
+```c
+void sort_stack(t_program *prog)
+{
+    // 50 lines of code...
+}
+```
+
+**Good:**
+```c
+void sort_small(t_program *prog)
+{
+    if (prog->size == 2)
+        sort_two(prog);
+    else if (prog->size == 3)
+        sort_three(prog);
+}
+
+void sort_two(t_program *prog)
+{
+    if (stack_peek(prog->stack_a) > ...)
+        op_sa(prog);
+}
+```
+
+**Counting rule:** Lines of code between { and }, not counting the braces themselves.
+
+#### 2. Max 4 Parameters Per Function
+
+**Bad:**
+```c
+int do_something(t_stack *a, t_stack *b, int x, int y, int z)
+```
+
+**Good:**
+```c
+int do_something(t_program *prog, int x, int y)
+```
+
+Use the `t_program` structure to pass multiple pieces of state!
+
+#### 3. Max 5 Variables Per Function
+
+**Bad:**
+```c
+void some_function(void)
+{
+    int a, b, c, d, e, f;  // 6 variables
+}
+```
+
+**Good:**
+```c
+void some_function(void)
+{
+    int a, b, c, d, e;     // 5 variables
+    
+    // Code...
+}
+```
+
+#### 4. Lines ≤ 80 Columns
+
+**Bad:**
+```c
+if (condition1 && condition2 && condition3) do_something_with_long_name();
+```
+
+**Good:**
+```c
+if (condition1 && condition2 && condition3)
+    do_something_with_long_name();
+```
+
+#### 5. No for, do...while, switch, case, ternaries
+
+**Bad:**
+```c
+for (int i = 0; i < n; i++)
+```
+
+**Good:**
+```c
+int i = 0;
+while (i < n)
+{
+    // ...
+    i++;
+}
+```
+
+#### 6. Formatting Details
+
+**Indentation:** 4-space REAL TABS (not spaces)
+```c
+void function(void)
+{
+	int x;           // One tab = 4 columns
+	
+	x = 5;           // One tab = 4 columns
+}
+```
+
+**Spaces around operators:**
+```c
+int x = 5;        // YES
+int x=5;          // NO
+
+if (x > 5)        // YES
+if(x>5)           // NO
+
+int *ptr;         // YES (pointer stuck to name)
+int * ptr;        // NO
+```
+
+**Function prototypes:** Include parameter names
+```c
+int my_function(int a, char *str);  // YES
+int my_function(int, char *);       // NO
+```
+
+---
+
+## Common Issues & Solutions
+
+### Issue 1: Memory Leaks
+
+**Problem:** Allocated memory not freed
+```c
+t_node *node = malloc(sizeof(t_node));
+// ... use node ...
+// (forgot to free)
+```
+
+**Solution:** Track all allocations and free before exiting
+```c
+void free_program(t_program *prog)
+{
+    stack_free(prog->stack_a);   // Frees all nodes
+    stack_free(prog->stack_b);
+    free(prog->sorted_array);
+    free(prog);
+}
+```
+
+### Issue 2: Integer Overflow
+
+**Problem:** String "2147483648" overflows INT_MAX
+```c
+int num = str_to_int("2147483648");  // WRONG! Overflows
+```
+
+**Solution:** Check before converting
+```c
+long num = 0;
+while (*str)
+{
+    num = num * 10 + (*str - '0');
+    if (num > INT_MAX) return (-1);  // Error
+    str++;
+}
+```
+
+### Issue 3: Stack Order Confusion
+
+**Problem:** Pushing elements in wrong order
+```c
+// Array: [2, 1, 3] (2 is first argument)
+push(stack, 2);  // 2 is now top
+push(stack, 1);  // 1 is now top
+push(stack, 3);  // 3 is now top
+
+// Stack visualization: [3 1 2] with 3 at top
+```
+
+**Key insight:** When you push in order, the last pushed is at top!
+
+**Solution:** Either push in reverse order, or use a loop that reverses.
+
+### Issue 4: Rotation Logic Errors
+
+**Problem:** Forgetting that rotation moves elements
+```c
+// Before ra: [5 3 1]
+// After ra:  [3 1 5]
+```
+
+**Solution:** Carefully trace through pointer manipulations:
+1. Save top node: `first = stack->top`
+2. Move top forward: `stack->top = first->next`
+3. Find last node and attach: `last->next = first; first->next = NULL`
+
+---
+
+## Step-by-Step Development
+
+### Development Order
+
+1. **Setup**
+   - Create Makefile
+   - Create header file with all types
+   - Create main.c (minimal)
+
+2. **Core Stack**
+   - Implement stack.c (new, push, pop, peek, free)
+   - Test: create a stack, push/pop, verify order
+
+3. **Input Parsing**
+   - Implement parser.c
+   - Test: invalid integers, overflow, duplicates
+
+4. **Operations**
+   - Implement operations.c (sa, sb, ss, pa, pb)
+   - Test: verify each operation works correctly
+
+5. **Rotations**
+   - Implement rotate.c (ra, rb, rr, rra, rrb, rrr)
+   - Test: trace through manually
+
+6. **Utilities**
+   - Implement utils.c (is_sorted, print_stacks, free_program)
+   - Test: verify is_sorted works
+
+7. **Sorting**
+   - Implement sort.c
+   - Start with hardcoded 2 and 3 element cases
+   - Test with small inputs
+   - Gradually improve algorithm
+
+### Testing Strategy
+
+**After each component:**
+```bash
+make
+./push_swap 2 1 3
+./push_swap 1
+./push_swap 1 2 3
+./push_swap "abc"
+./push_swap 1 1 2
+```
+
+**Final testing:**
+```bash
+# Should be sorted
+./push_swap 5 4 3 2 1
+
+# Should use < 700 operations
+ARG=$(python3 -c "import random; print(' '.join(map(str, random.sample(range(1000), 100))))"); ./push_swap $ARG | wc -l
+```
+
+---
+
+## Key Takeaways
+
+1. **Stacks are simple but powerful** - Understanding LIFO makes the operations clear
+
+2. **Linked lists enable dynamic structures** - No need to pre-allocate array
+
+3. **The algorithm matters** - Different approaches for different input sizes
+
+4. **The Norm enforces good practices** - Small functions, clear naming, no tricks
+
+5. **Testing is critical** - Edge cases (duplicates, negatives, single element) matter
+
+6. **Memory management is essential** - Every malloc needs a corresponding free

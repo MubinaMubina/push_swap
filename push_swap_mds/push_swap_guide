@@ -1,0 +1,276 @@
+# Push_Swap Project - Complete Guide
+
+## Part 1: Understanding the Problem
+
+### What is Push_Swap?
+
+Push_swap is a sorting challenge where you must sort integers using only specific stack operations. You have two stacks (a and b) and a limited set of commands. Your goal is to sort stack a in **ascending order** using the **fewest possible operations**.
+
+This project teaches:
+- Algorithm design and optimization
+- Stack data structures
+- Big O complexity analysis
+- How to choose the right algorithm for different data sizes
+
+### The Two Stacks
+
+**Stack A (initial):**
+```
+Top → [5, 3, 1]
+```
+You push and pop from the top.
+
+**Stack B (empty initially):**
+```
+Top → [ ]
+```
+
+### Available Operations (11 total)
+
+| Operation | Effect |
+|-----------|--------|
+| `sa` | Swap top 2 elements of stack a |
+| `sb` | Swap top 2 elements of stack b |
+| `ss` | Do sa and sb simultaneously |
+| `pa` | Pop from b, push onto a |
+| `pb` | Pop from a, push onto b |
+| `ra` | Rotate a upward (top becomes bottom) |
+| `rb` | Rotate b upward (top becomes bottom) |
+| `rr` | Do ra and rb simultaneously |
+| `rra` | Reverse rotate a (bottom becomes top) |
+| `rrb` | Reverse rotate b (bottom becomes top) |
+| `rrr` | Do rra and rrb simultaneously |
+
+### Example
+
+Initial: `a: [2 1 3 6 5 8]` (5 is bottom, 2 is top)
+
+After `sa`: `a: [1 2 3 6 5 8]` (swapped top 2)
+
+After `pb pb pb`: `a: [6 5 8]`, `b: [3 2 1]` (moved top 3 from a to b)
+
+## Part 2: Data Structures & Key Concepts
+
+### Understanding Stacks in C
+
+A stack is a LIFO (Last In, First Out) data structure. We'll implement it as a linked list:
+
+```c
+typedef struct s_node
+{
+	int				value;
+	struct s_node	*next;
+}	t_node;
+
+typedef struct s_stack
+{
+	t_node	*top;
+	int		size;
+}	t_stack;
+```
+
+### Key Insight: Stack Operations
+
+When we say "stack grows from the right" in visualizations:
+```
+Bottom ← [1 2 3] → Top
+          ↑
+      next field chains backwards
+```
+
+### Algorithm Approaches
+
+**For 3 elements:** Hardcoded solution (max 2 operations)
+
+**For 5 elements:** Simple sorting approach (max ~12 operations)
+
+**For 100 elements:** Chunked approach
+- Divide numbers into ranges
+- Move chunks to stack b
+- Sort chunks and push back
+
+**For 500 elements:** Similar chunked approach with optimized ranges
+
+The key is: **the most efficient algorithm depends on the data size**.
+
+## Part 3: 42 Norm Rules Overview
+
+### Critical Norm Rules for This Project
+
+1. **Functions:** Max 25 lines, max 4 parameters, max 5 variables
+2. **Lines:** Max 80 columns wide
+3. **Naming:** snake_case, meaningful names, prefixes for types
+   - `t_` for typedef
+   - `s_` for struct
+   - `g_` for global (avoid when possible)
+4. **Formatting:** 4-space real tabs, proper spacing around operators
+5. **Forbidden:** `for`, `do...while`, `switch`, ternaries, VLAs
+6. **Structure:** Each file max 5 function-definitions
+7. **Header:** All files need the 42 header comment
+
+### Example of Norm-Compliant Code
+
+```c
+/*
+** EPITECH PROJECT, 2024
+** push_swap
+** File description:
+** Stack operations
+*/
+
+#include "push_swap.h"
+
+int	push(t_stack *stack, int value)
+{
+	t_node	*new_node;
+
+	new_node = malloc(sizeof(t_node));
+	if (!new_node)
+		return (-1);
+	new_node->value = value;
+	new_node->next = stack->top;
+	stack->top = new_node;
+	stack->size++;
+	return (0);
+}
+```
+
+Notice:
+- Return type on separate line from function name
+- Single tab between return type and name
+- Braces on separate lines
+- Variables grouped at top
+- Meaningful names
+- Error handling
+
+## Part 4: Project Architecture
+
+### Recommended File Structure
+
+```
+push_swap/
+├── Makefile
+├── push_swap.h          # Main header
+├── srcs/
+│   ├── main.c          # Entry point
+│   ├── parser.c        # Parse and validate input
+│   ├── stack.c         # Stack operations (push, pop, etc)
+│   ├── operations.c    # sa, sb, ss, pa, pb
+│   ├── rotate.c        # ra, rb, rr, rra, rrb, rrr
+│   ├── sort.c          # Sorting logic
+│   └── utils.c         # Helper functions
+└── libft/ (if using custom library)
+```
+
+### Header File Structure
+
+```c
+#ifndef PUSH_SWAP_H
+# define PUSH_SWAP_H
+
+# include <stdlib.h>
+# include <unistd.h>
+# include <stdio.h>
+# include <limits.h>
+
+typedef struct s_node
+{
+	int				value;
+	struct s_node	*next;
+}	t_node;
+
+typedef struct s_stack
+{
+	t_node	*top;
+	int		size;
+}	t_stack;
+
+typedef struct s_program
+{
+	t_stack	*stack_a;
+	t_stack	*stack_b;
+	int		*sorted;
+	int		size;
+}	t_program;
+
+/* Stack operations */
+int		push(t_stack *stack, int value);
+int		pop(t_stack *stack);
+int		peek(t_stack *stack);
+void	print_stack(t_stack *stack);
+
+/* Operations */
+void	op_sa(t_stack *a, t_stack *b);
+void	op_sb(t_stack *a, t_stack *b);
+void	op_ss(t_stack *a, t_stack *b);
+void	op_pa(t_stack *a, t_stack *b);
+void	op_pb(t_stack *a, t_stack *b);
+
+/* Rotations */
+void	op_ra(t_stack *a, t_stack *b);
+void	op_rb(t_stack *a, t_stack *b);
+void	op_rr(t_stack *a, t_stack *b);
+void	op_rra(t_stack *a, t_stack *b);
+void	op_rrb(t_stack *a, t_stack *b);
+void	op_rrr(t_stack *a, t_stack *b);
+
+/* Sorting */
+void	sort_stack(t_program *prog);
+void	sort_three(t_program *prog);
+
+/* Utilities */
+void	free_all(t_program *prog);
+int		is_sorted(t_stack *stack);
+
+#endif
+```
+
+## Part 5: Building Step by Step
+
+### Step 1: Parsing Arguments
+- Read command-line integers
+- Validate they're integers (not "one" or "abc")
+- Check for duplicates
+- Check for integer overflow
+- Store in array or directly in stack
+
+### Step 2: Stack Operations
+- Implement push, pop, peek
+- Implement all 11 operations (sa, sb, ss, pa, pb, ra, rb, rr, rra, rrb, rrr)
+- Each operation should print itself to stdout
+
+### Step 3: Basic Sorting (for small numbers)
+- Sort 2 elements: use sa if needed
+- Sort 3 elements: max 2 swaps (hardcoded logic)
+- This handles edge cases
+
+### Step 4: Algorithm for Larger Numbers
+- For 5-100 elements: simple approach
+- For 100-500 elements: chunked/radix-like approach
+- The key: minimize operations within benchmark limits
+
+### Step 5: Testing & Optimization
+- Use checker program to verify correctness
+- Count operations
+- Optimize algorithm
+
+## Part 6: Common Pitfalls
+
+### Norm Violations
+- Using `for` loops (use `while` instead)
+- Functions > 25 lines (split into multiple functions)
+- Variables not grouped at top of function
+- Lines > 80 columns
+- Not using real tabs (not spaces)
+
+### Logic Errors
+- Reversing stack order (be careful with linked lists!)
+- Off-by-one errors in parsing
+- Not handling duplicates
+- Not checking for integer overflow
+- Memory leaks (always free allocated memory)
+
+### Algorithm Inefficiency
+- Too many operations for the benchmark
+- Not choosing the right algorithm for data size
+- Redundant moves
