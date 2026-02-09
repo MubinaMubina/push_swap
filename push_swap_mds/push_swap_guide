@@ -82,16 +82,24 @@ Bottom ← [1 2 3] → Top
 
 **For 3 elements:** Hardcoded solution (max 2 operations)
 
-**For 5 elements:** Simple sorting approach (max ~12 operations)
+**For 4+ elements:** RADIX SORT (Optimal Approach!)
+- Process numbers bit-by-bit from LSB to MSB
+- For each bit: separate elements into 0-bit and 1-bit groups
+- Guarantee: **100 numbers in ~600 ops, 500 numbers in ~5000 ops**
 
-**For 100 elements:** Chunked approach
-- Divide numbers into ranges
-- Move chunks to stack b
-- Sort chunks and push back
+**Why Radix Sort?**
+- Deterministic performance (always efficient)
+- Time: O(n × log(max_value)) operations
+- Elegant: natural bit manipulation
+- Proven: professional standard for push_swap
 
-**For 500 elements:** Similar chunked approach with optimized ranges
-
-The key is: **the most efficient algorithm depends on the data size**.
+The implementation works by:
+1. Finding how many bits are needed
+2. For each bit position (LSB to MSB):
+   - Elements with 0-bit → push to stack b
+   - Elements with 1-bit → rotate in stack a
+   - Push everything back from b to a
+3. After all bits: stack a is fully sorted!
 
 ## Part 3: 42 Norm Rules Overview
 
@@ -274,3 +282,17 @@ int		is_sorted(t_stack *stack);
 - Too many operations for the benchmark
 - Not choosing the right algorithm for data size
 - Redundant moves
+
+## Part 7: Next Steps
+
+You're now ready to:
+1. Create the project structure
+2. Write the Makefile
+3. Implement stack operations
+4. Implement the 11 push_swap operations
+5. Write a parser for arguments
+6. Implement basic sorting
+7. Optimize with a better algorithm
+8. Test thoroughly
+9. Write the README.md
+
