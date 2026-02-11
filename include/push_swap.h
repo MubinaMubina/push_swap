@@ -1,9 +1,15 @@
-/*
-** EPITECH PROJECT, 2024
-** push_swap
-** File description:
-** Main header file for push_swap project
-*/
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   push_swap.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mmubina <mmubina@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/02/12 00:16:00 by mmubina           #+#    #+#             */
+/*   Updated: 2026/02/12 00:16:04 by mmubina          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 
 #ifndef PUSH_SWAP_H
 # define PUSH_SWAP_H
@@ -12,6 +18,7 @@
 # include <unistd.h>
 # include <stdio.h>
 # include <limits.h>
+# include <string.h>
 
 typedef struct s_node
 {

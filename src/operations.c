@@ -6,7 +6,7 @@
 /*   By: mmubina <mmubina@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/09 22:32:54 by mmubina           #+#    #+#             */
-/*   Updated: 2026/02/09 22:33:55 by mmubina          ###   ########.fr       */
+/*   Updated: 2026/02/12 00:51:27 by mmubina          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,26 +43,4 @@ void	op_ss(t_program *prog)
 	swap_stack(prog->stack_a);
 	swap_stack(prog->stack_b);
 	write(1, "ss\n", 3);
-}
-
-void	op_pa(t_program *prog)
-{
-	int	value;
-
-	if (stack_is_empty(prog->stack_b))
-		return ;
-	value = stack_pop(prog->stack_b);
-	stack_push(prog->stack_a, value);
-	write(1, "pa\n", 3);
-}
-
-void	op_pb(t_program *prog)
-{
-	int	value;
-
-	if (stack_is_empty(prog->stack_a))
-		return ;
-	value = stack_pop(prog->stack_a);
-	stack_push(prog->stack_b, value);
-	write(1, "pb\n", 3);
 }

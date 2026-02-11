@@ -6,7 +6,7 @@
 /*   By: mmubina <mmubina@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/09 22:33:00 by mmubina           #+#    #+#             */
-/*   Updated: 2026/02/09 22:33:59 by mmubina          ###   ########.fr       */
+/*   Updated: 2026/02/12 00:51:40 by mmubina          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,30 +59,4 @@ void	op_rb(t_program *prog)
 {
 	rotate_stack(prog->stack_b);
 	write(1, "rb\n", 3);
-}
-
-void	op_rr(t_program *prog)
-{
-	rotate_stack(prog->stack_a);
-	rotate_stack(prog->stack_b);
-	write(1, "rr\n", 3);
-}
-
-void	op_rra(t_program *prog)
-{
-	reverse_rotate_stack(prog->stack_a);
-	write(1, "rra\n", 4);
-}
-
-void	op_rrb(t_program *prog)
-{
-	reverse_rotate_stack(prog->stack_b);
-	write(1, "rrb\n", 4);
-}
-
-void	op_rrr(t_program *prog)
-{
-	reverse_rotate_stack(prog->stack_a);
-	reverse_rotate_stack(prog->stack_b);
-	write(1, "rrr\n", 4);
 }

@@ -6,13 +6,13 @@
 /*   By: mmubina <mmubina@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/09 22:33:04 by mmubina           #+#    #+#             */
-/*   Updated: 2026/02/09 22:34:02 by mmubina          ###   ########.fr       */
+/*   Updated: 2026/02/12 00:51:43 by mmubina          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/push_swap.h"
 
-static void	sort_three(t_program *prog)
+void	sort_three(t_program *prog)
 {
 	int	top;
 	int	second;
@@ -39,7 +39,7 @@ static void	sort_three(t_program *prog)
 		op_rra(prog);
 }
 
-static void	sort_small(t_program *prog)
+void	sort_small(t_program *prog)
 {
 	if (prog->size == 1)
 		return ;
@@ -52,7 +52,7 @@ static void	sort_small(t_program *prog)
 		sort_three(prog);
 }
 
-static int	get_max_bits(int *array, int size)
+int	get_max_bits(int *array, int size)
 {
 	int	max;
 	int	i;
@@ -72,7 +72,7 @@ static int	get_max_bits(int *array, int size)
 	return (bits);
 }
 
-static void	radix_sort_loop(t_program *prog, int bit)
+void	radix_sort_loop(t_program *prog, int bit)
 {
 	int	size;
 	int	i;

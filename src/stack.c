@@ -6,7 +6,7 @@
 /*   By: mmubina <mmubina@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/09 22:33:07 by mmubina           #+#    #+#             */
-/*   Updated: 2026/02/09 22:34:04 by mmubina          ###   ########.fr       */
+/*   Updated: 2026/02/12 00:53:43 by mmubina          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,28 +58,4 @@ int	stack_peek(t_stack *stack)
 	if (stack_is_empty(stack))
 		return (INT_MIN);
 	return (stack->top->value);
-}
-
-int	stack_is_empty(t_stack *stack)
-{
-	if (!stack || stack->top == NULL)
-		return (1);
-	return (0);
-}
-
-void	stack_free(t_stack *stack)
-{
-	t_node	*current;
-	t_node	*temp;
-
-	if (!stack)
-		return ;
-	current = stack->top;
-	while (current)
-	{
-		temp = current->next;
-		free(current);
-		current = temp;
-	}
-	free(stack);
 }
