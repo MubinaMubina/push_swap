@@ -6,7 +6,7 @@
 /*   By: mmubina <mmubina@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/12 00:52:04 by mmubina           #+#    #+#             */
-/*   Updated: 2026/02/12 01:46:32 by mmubina          ###   ########.fr       */
+/*   Updated: 2026/02/12 02:18:16 by mmubina          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,8 +49,8 @@ void	index_stack(t_program *prog)
 		{
 			if (current->value == prog->sorted_array[i])
 			{
-				current->value = i; // Replace raw value with its index
-				break;
+				current->value = i;
+				break ;
 			}
 			i++;
 		}

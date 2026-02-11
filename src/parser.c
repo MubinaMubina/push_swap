@@ -6,7 +6,7 @@
 /*   By: mmubina <mmubina@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/09 22:32:58 by mmubina           #+#    #+#             */
-/*   Updated: 2026/02/12 01:06:58 by mmubina          ###   ########.fr       */
+/*   Updated: 2026/02/12 02:17:15 by mmubina          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,7 @@ int	has_duplicates(int *array, int size)
 	}
 	return (0);
 }
+
 int	str_to_int(const char *str)
 {
 	long	num;

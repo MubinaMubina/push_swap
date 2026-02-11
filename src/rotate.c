@@ -6,11 +6,12 @@
 /*   By: mmubina <mmubina@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/09 22:33:00 by mmubina           #+#    #+#             */
-/*   Updated: 2026/02/12 01:05:06 by mmubina          ###   ########.fr       */
+/*   Updated: 2026/02/12 02:17:28 by mmubina          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/push_swap.h"
+
 void	rotate_stack(t_stack *stack)
 {
 	t_node	*first;
