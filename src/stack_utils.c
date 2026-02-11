@@ -6,7 +6,7 @@
 /*   By: mmubina <mmubina@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/12 00:52:04 by mmubina           #+#    #+#             */
-/*   Updated: 2026/02/12 00:53:15 by mmubina          ###   ########.fr       */
+/*   Updated: 2026/02/12 01:46:32 by mmubina          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,4 +34,26 @@ void	stack_free(t_stack *stack)
 		current = temp;
 	}
 	free(stack);
+}
+
+void	index_stack(t_program *prog)
+{
+	t_node	*current;
+	int		i;
+
+	current = prog->stack_a->top;
+	while (current)
+	{
+		i = 0;
+		while (i < prog->size)
+		{
+			if (current->value == prog->sorted_array[i])
+			{
+				current->value = i; // Replace raw value with its index
+				break;
+			}
+			i++;
+		}
+		current = current->next;
+	}
 }

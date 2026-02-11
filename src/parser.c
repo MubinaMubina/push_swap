@@ -6,13 +6,13 @@
 /*   By: mmubina <mmubina@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/09 22:32:58 by mmubina           #+#    #+#             */
-/*   Updated: 2026/02/12 00:51:34 by mmubina          ###   ########.fr       */
+/*   Updated: 2026/02/12 01:06:58 by mmubina          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/push_swap.h"
 
-static int	is_valid_integer(const char *str)
+int	is_valid_integer(const char *str)
 {
 	int	i;
 	int	has_digits;
@@ -31,7 +31,7 @@ static int	is_valid_integer(const char *str)
 	return (has_digits);
 }
 
-static int	overflow_check(const char *str)
+int	overflow_check(const char *str)
 {
 	long	num;
 	int		sign;
@@ -59,7 +59,7 @@ static int	overflow_check(const char *str)
 	return (1);
 }
 
-static int	has_duplicates(int *array, int size)
+int	has_duplicates(int *array, int size)
 {
 	int	i;
 	int	j;
@@ -78,8 +78,7 @@ static int	has_duplicates(int *array, int size)
 	}
 	return (0);
 }
-
-static int	str_to_int(const char *str)
+int	str_to_int(const char *str)
 {
 	long	num;
 	int		sign;
@@ -103,7 +102,7 @@ static int	str_to_int(const char *str)
 	return ((int)(num * sign));
 }
 
-static int	count_numbers(const char *str)
+int	count_numbers(const char *str)
 {
 	int	count;
 	int	in_number;

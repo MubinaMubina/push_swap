@@ -6,13 +6,12 @@
 /*   By: mmubina <mmubina@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/09 22:33:00 by mmubina           #+#    #+#             */
-/*   Updated: 2026/02/12 00:51:40 by mmubina          ###   ########.fr       */
+/*   Updated: 2026/02/12 01:05:06 by mmubina          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/push_swap.h"
-
-static void	rotate_stack(t_stack *stack)
+void	rotate_stack(t_stack *stack)
 {
 	t_node	*first;
 	t_node	*current;
@@ -28,7 +27,7 @@ static void	rotate_stack(t_stack *stack)
 	first->next = NULL;
 }
 
-static void	reverse_rotate_stack(t_stack *stack)
+void	reverse_rotate_stack(t_stack *stack)
 {
 	t_node	*current;
 	t_node	*prev;

@@ -6,11 +6,35 @@
 /*   By: mmubina <mmubina@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/12 00:43:56 by mmubina           #+#    #+#             */
-/*   Updated: 2026/02/12 00:51:30 by mmubina          ###   ########.fr       */
+/*   Updated: 2026/02/12 02:06:46 by mmubina          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/push_swap.h"
+
+void	sort_int_array(int *array, int size)
+{
+	int	i;
+	int	j;
+	int	temp;
+
+	i = 0;
+	while (i < size - 1)
+	{
+		j = i + 1;
+		while (j < size)
+		{
+			if (array[i] > array[j])
+			{
+				temp = array[i];
+				array[i] = array[j];
+				array[j] = temp;
+			}
+			j++;
+		}
+		i++;
+	}
+}
 
 static int	extract_number(const char *str, int *pos, char *num_str)
 {
@@ -63,7 +87,7 @@ static int	parse_space_separated(const char *str, int **array)
 	return (count);
 }
 
-static int	get_int_array(int argc, char **argv, int **array)
+int	get_int_array(int argc, char **argv, int **array)
 {
 	int	count;
 	int	i;
@@ -108,11 +132,11 @@ int	parse_and_create(int argc, char **argv, t_program *prog)
 	}
 	prog->size = count;
 	prog->sorted_array = array;
-	i = 0;
-	while (i < prog->size)
+	i = prog->size - 1;
+	while (i >= 0)
 	{
 		stack_push(prog->stack_a, array[i]);
-		i++;
+		i--;
 	}
 	return (1);
 }

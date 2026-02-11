@@ -6,10 +6,9 @@
 #    By: mmubina <mmubina@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/02/09 20:06:31 by mmubina           #+#    #+#              #
-#    Updated: 2026/02/11 21:38:05 by mmubina          ###   ########.fr        #
+#    Updated: 2026/02/12 01:28:02 by mmubina          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
-
 
 NAME = push_swap
 
@@ -25,7 +24,11 @@ SRCS = main.c \
        rotate.c \
        parser.c \
        utils.c \
-       sort.c
+       sort.c \
+	   operations_utils.c \
+	   parser_utils.c \
+	   rotate_utils.c \
+	   stack_utils.c
 
 PATH_LIBFT = ./include/libft/
 LIBFT = $(PATH_LIBFT)libft.a
@@ -43,7 +46,7 @@ $(NAME): $(LIBFT) $(OBJS_PATH) $(OBJS)
 
 $(OBJS_PATH)%.o: $(SRCS_PATH)%.c | $(OBJS_PATH)
 	$(CC) $(CFLAGS) -I $(INC_PATH) -c $< -o $@ $(INCLUDE)
-	
+
 $(OBJS_PATH):
 	mkdir -p $(OBJS_PATH)
 
@@ -58,4 +61,3 @@ fclean: clean
 	make -C $(PATH_LIBFT) fclean
 re: fclean all
 .PHONY: all clean fclean re
-
