@@ -6,7 +6,7 @@
 #    By: mmubina <mmubina@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/02/09 20:06:31 by mmubina           #+#    #+#              #
-#    Updated: 2026/02/09 20:13:50 by mmubina          ###   ########.fr        #
+#    Updated: 2026/02/09 22:28:41 by mmubina          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,16 +19,13 @@ INC_PATH = includes/
 
 OBJS_PATH = objs/
 
-SRCS = push_swap.c \
-	   utils.c \
-	   sort.c \
-	   sort_utils.c \
-	   sort_small.c \
-	   sort_large.c \
-	   operations.c \
-	   operations_utils.c \
-	   stack_utils.c \
-	   parse.c \
+SRCS = main.c \
+       stack.c \
+       operations.c \
+       rotate.c \
+       parser.c \
+       utils.c \
+       sort.c
 
 PATH_LIBFT = libft/
 LIBFT = $(PATH_LIBFT)libft.a

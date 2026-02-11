@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   push_swap.c                                        :+:      :+:    :+:   */
+/*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmubina <mmubina@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/09 22:18:42 by mmubina           #+#    #+#             */
-/*   Updated: 2026/02/09 22:19:01 by mmubina          ###   ########.fr       */
+/*   Created: 2026/02/09 22:32:51 by mmubina           #+#    #+#             */
+/*   Updated: 2026/02/09 22:33:52 by mmubina          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,29 +14,33 @@
 
 int	main(int argc, char **argv)
 {
-	t_stack	stack;
+	t_program	*prog;
+	int			parse_result;
 
 	if (argc < 2)
 		return (0);
-	if (argc == 2)
+	prog = malloc(sizeof(t_program));
+	if (!prog)
+		return (1);
+	prog->stack_a = stack_new();
+	prog->stack_b = stack_new();
+	prog->sorted_array = NULL;
+	prog->size = 0;
+	if (!prog->stack_a || !prog->stack_b)
 	{
-		if (!initialize_stack_single(argv[1], &stack))
-			return (ft_putendl_fd("Error", 2), 1);
+		free_program(prog);
+		return (1);
 	}
-	else
+	parse_result = parse_and_create(argc, argv, prog);
+	if (parse_result == -1)
 	{
-		if (!initialize_stack_multiple(argc, argv, &stack))
-			return (ft_putendl_fd("Error", 2), 1);
+		free_program(prog);
+		return (1);
 	}
-	if (!is_sorted(&stack))
-		convert_to_indices(&stack);
-	else
-		return (free(stack.a), free(stack.b), 0);
-	if (stack.size_a <= 5)
-		sort_small_stack(&stack);
-	else
-		radix_sort(&stack);
-	free(stack.a);
-	free(stack.b);
+	if (parse_result == 1)
+	{
+		sort_stack(prog);
+	}
+	free_program(prog);
 	return (0);
 }
