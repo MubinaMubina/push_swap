@@ -5,57 +5,99 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmubina <mmubina@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/09 22:33:07 by mmubina           #+#    #+#             */
-/*   Updated: 2026/02/12 00:53:43 by mmubina          ###   ########.fr       */
+/*   Created: 2026/02/12 00:52:04 by mmubina           #+#    #+#             */
+/*   Updated: 2026/02/13 01:45:22 by mmubina          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/push_swap.h"
 
-t_stack	*stack_new(void)
+int	initialize_stack(int argc, char **argv, t_stack *stack, char **args)
 {
-	t_stack	*stack;
+	int	i;
 
-	stack = malloc(sizeof(t_stack));
 	if (!stack)
-		return (NULL);
-	stack->top = NULL;
-	stack->size = 0;
-	return (stack);
+		return (0);
+	stack->a = (int *)malloc(sizeof(int) * (argc + 1));
+	stack->b = (int *)malloc(sizeof(int) * (argc + 1));
+	if (!stack->a || !stack->b)
+	{
+		free(stack->a);
+		free(stack->b);
+		free(stack);
+		return (0);
+	}
+	i = 0;
+	while (i < argc)
+	{
+		stack->a[i] = ft_atoi_wcheck(argv[i + 1], stack, args);
+		i++;
+	}
+	stack->a[i] = 0;
+	stack->size_a = argc;
+	stack->b[0] = 0;
+	stack->size_b = 0;
+	return (1);
 }
 
-int	stack_push(t_stack *stack, int value)
+static int	find_min_pos(int *arr, int size)
 {
-	t_node	*new_node;
+	int	min_pos;
+	int	i;
 
-	new_node = malloc(sizeof(t_node));
-	if (!new_node)
-		return (-1);
-	new_node->value = value;
-	new_node->next = stack->top;
-	stack->top = new_node;
-	stack->size++;
-	return (0);
+	min_pos = 0;
+	i = 1;
+	while (i < size)
+	{
+		if (arr[i] < arr[min_pos])
+			min_pos = i;
+		i++;
+	}
+	return (min_pos);
 }
 
-int	stack_pop(t_stack *stack)
+static void	build_index_map(int *temp, int *indices, int size)
 {
-	t_node	*temp;
-	int		value;
+	int	i;
+	int	min_pos;
 
-	if (stack_is_empty(stack))
-		return (INT_MIN);
-	temp = stack->top;
-	value = temp->value;
-	stack->top = temp->next;
-	stack->size--;
+	i = 0;
+	while (i < size)
+	{
+		min_pos = find_min_pos(temp, size);
+		indices[min_pos] = i;
+		temp[min_pos] = INT_MAX;
+		i++;
+	}
+}
+
+void	convert_to_indices(t_stack *arr)
+{
+	int	i;
+	int	*indices;
+	int	*temp;
+
+	indices = (int *)malloc(sizeof(int) * arr->size_a);
+	temp = (int *)malloc(sizeof(int) * arr->size_a);
+	if (!indices || !temp)
+	{
+		free(indices);
+		free(temp);
+		return ;
+	}
+	i = 0;
+	while (i < arr->size_a)
+	{
+		temp[i] = arr->a[i];
+		i++;
+	}
+	build_index_map(temp, indices, arr->size_a);
+	i = 0;
+	while (i < arr->size_a)
+	{
+		arr->a[i] = indices[i];
+		i++;
+	}
+	free(indices);
 	free(temp);
-	return (value);
-}
-
-int	stack_peek(t_stack *stack)
-{
-	if (stack_is_empty(stack))
-		return (INT_MIN);
-	return (stack->top->value);
 }

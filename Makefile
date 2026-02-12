@@ -6,7 +6,7 @@
 #    By: mmubina <mmubina@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/02/09 20:06:31 by mmubina           #+#    #+#              #
-#    Updated: 2026/02/12 01:28:02 by mmubina          ###   ########.fr        #
+#    Updated: 2026/02/13 02:02:52 by mmubina          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,16 +19,14 @@ INC_PATH = includes/
 OBJS_PATH = objs/
 
 SRCS = main.c \
-       stack.c \
-       operations.c \
-       rotate.c \
-       parser.c \
-       utils.c \
-       sort.c \
+	   sort.c \
+	   sort_small.c \
+	   operations.c \
 	   operations_utils.c \
-	   parser_utils.c \
-	   rotate_utils.c \
-	   stack_utils.c
+	   stack.c \
+	   special_input.c \
+	   utils.c \
+	   validate_input.c
 
 PATH_LIBFT = ./include/libft/
 LIBFT = $(PATH_LIBFT)libft.a

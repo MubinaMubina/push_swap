@@ -6,37 +6,48 @@
 /*   By: mmubina <mmubina@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/09 22:32:51 by mmubina           #+#    #+#             */
-/*   Updated: 2026/02/12 01:49:50 by mmubina          ###   ########.fr       */
+/*   Updated: 2026/02/13 01:18:49 by mmubina          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/push_swap.h"
 
+static int	init_and_validate(int argc, char **argv, t_stack **arr)
+{
+	*arr = (t_stack *)malloc(sizeof(t_stack));
+	if (!*arr)
+		return (write(2, "Error\n", 6));
+	if (argc == 2)
+		special_init(argv[1], *arr);
+	else
+		initialize_stack(argc - 1, argv, *arr, NULL);
+	if (parse_and_validate(*arr, (*arr)->size_a + 1) != 0)
+	{
+		free_stacks(*arr);
+		return (1);
+	}
+	return (0);
+}
+
 int	main(int argc, char **argv)
 {
-	t_program	*prog;
-	int			parse_result;
+	t_stack *arr;
 
-	if (argc < 2)
-		return (0);
-	prog = malloc(sizeof(t_program));
-	if (!prog)
+	if (argc < 2 || argv[1][0] == '\0')
+		return (write(2, "Error\n", 6));
+	if (argv[1][0] == ' ' && argv[1][1] == '\0')
+		return (write(2, "Error\n", 6));
+	if ((!validate_arguments(argc, argv) && argc > 2)
+		|| validate_format(argv) == 0)
+		return (write(2, "Error\n", 6));
+	if (init_and_validate(argc, argv, &arr) != 0)
 		return (1);
-	prog->stack_a = stack_new();
-	prog->stack_b = stack_new();
-	prog->sorted_array = NULL;
-	prog->size = 0;
-	if (!prog->stack_a || !prog->stack_b)
-		return (free_program(prog), 1);
-	parse_result = parse_and_create(argc, argv, prog);
-	if (parse_result == -1)
-		return (free_program(prog), 1);
-	if (parse_result == 1)
-	{
-		sort_int_array(prog->sorted_array, prog->size);
-		index_stack(prog);
-		sort_stack(prog);
-	}
-	free_program(prog);
+	if (!is_sorted(arr))
+		convert_to_indices(arr);
+	if (arr->size_a <= 5)
+		sort_small_stack(arr);
+	else
+		radix_sort(arr);
+	free_stacks(arr);
 	return (0);
 }

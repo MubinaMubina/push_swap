@@ -6,106 +6,56 @@
 /*   By: mmubina <mmubina@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/09 22:33:04 by mmubina           #+#    #+#             */
-/*   Updated: 2026/02/12 00:51:43 by mmubina          ###   ########.fr       */
+/*   Updated: 2026/02/13 01:29:17 by mmubina          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/push_swap.h"
 
-void	sort_three(t_program *prog)
+void	radix_sort_b(t_stack *arr, int size, int bit_size, int bit)
 {
-	int	top;
-	int	second;
-	int	third;
-
-	top = stack_peek(prog->stack_a);
-	second = prog->stack_a->top->next->value;
-	third = prog->stack_a->top->next->next->value;
-	if (top > second && second < third && top < third)
-		op_sa(prog);
-	else if (top > second && second > third)
+	while (size-- && bit <= bit_size && !is_sorted(arr))
 	{
-		op_sa(prog);
-		op_rra(prog);
+		if (((arr->b[0] >> bit) & 1) == 0)
+			rb(arr);
+		else
+			pa(arr);
 	}
-	else if (top > second && second < third && top > third)
-		op_ra(prog);
-	else if (top < second && second > third && top < third)
-	{
-		op_sa(prog);
-		op_ra(prog);
-	}
-	else if (top < second && second > third && top > third)
-		op_rra(prog);
+	if (is_sorted(arr))
+		while (arr->size_b > 0)
+			pa(arr);
 }
 
-void	sort_small(t_program *prog)
+int	get_max_bits(int n)
 {
-	if (prog->size == 1)
-		return ;
-	if (prog->size == 2)
-	{
-		if (prog->stack_a->top->value > prog->stack_a->top->next->value)
-			op_sa(prog);
-	}
-	else if (prog->size == 3)
-		sort_three(prog);
+	int	bit_size;
+
+	bit_size = 0;
+	while (n >> bit_size)
+		bit_size++;
+	return (bit_size);
 }
 
-int	get_max_bits(int *array, int size)
-{
-	int	max;
-	int	i;
-	int	bits;
-
-	max = array[0];
-	i = 1;
-	while (i < size)
-	{
-		if (array[i] > max)
-			max = array[i];
-		i++;
-	}
-	bits = 0;
-	while ((max >> bits) > 0)
-		bits++;
-	return (bits);
-}
-
-void	radix_sort_loop(t_program *prog, int bit)
+void	radix_sort(t_stack *arr)
 {
 	int	size;
-	int	i;
-
-	size = prog->stack_a->size;
-	i = 0;
-	while (i < size)
-	{
-		if (((prog->stack_a->top->value) >> bit) & 1)
-			op_ra(prog);
-		else
-			op_pb(prog);
-		i++;
-	}
-	while (prog->stack_b->size > 0)
-		op_pa(prog);
-}
-
-void	sort_stack(t_program *prog)
-{
 	int	bit;
-	int	max_bits;
+	int	bit_size;
 
-	if (prog->size <= 3)
+	bit_size = get_max_bits(arr->size_a - 1);
+	bit = -1;
+	while (++bit <= bit_size)
 	{
-		sort_small(prog);
-		return ;
+		size = arr->size_a;
+		while (size-- && !is_sorted(arr))
+		{
+			if (((arr->a[0] >> bit) & 1) == 0)
+				pb(arr);
+			else
+				ra(arr);
+		}
+		radix_sort_b(arr, arr->size_b, bit_size, bit + 1);
 	}
-	max_bits = get_max_bits(prog->sorted_array, prog->size);
-	bit = 0;
-	while (bit < max_bits)
-	{
-		radix_sort_loop(prog, bit);
-		bit++;
-	}
+	while (arr->size_b > 0)
+		pa(arr);
 }

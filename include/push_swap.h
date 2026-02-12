@@ -6,89 +6,71 @@
 /*   By: mmubina <mmubina@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/12 00:16:00 by mmubina           #+#    #+#             */
-/*   Updated: 2026/02/12 02:08:22 by mmubina          ###   ########.fr       */
+/*   Updated: 2026/02/13 01:18:19 by mmubina          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PUSH_SWAP_H
 # define PUSH_SWAP_H
 
-# include <limits.h>
-# include <stdio.h>
 # include <stdlib.h>
-# include <string.h>
 # include <unistd.h>
-#include "../libft/libft.h"
-
-typedef struct s_node
-{
-	int				value;
-	struct s_node	*next;
-}					t_node;
+# include <stdio.h>
+# include <limits.h>
+# include <string.h>
 
 typedef struct s_stack
 {
-	t_node			*top;
-	int				size;
-}					t_stack;
+	int	*a;
+	int	*b;
+	int	size_a;
+	int	size_b;
+}	t_stack;
 
-typedef struct s_program
-{
-	t_stack			*stack_a;
-	t_stack			*stack_b;
-	int				*sorted_array;
-	int				size;
-}					t_program;
+/* Main functions */
+int		main(int argc, char **argv);
 
-/* Stack creation and destruction */
-t_stack				*stack_new(void);
-void				stack_free(t_stack *stack);
+/* Initialization */
+int		initialize_stack(int argc, char **argv, t_stack *stack, char **args);
+void	convert_to_indices(t_stack *arr);
+void	special_init(char *str, t_stack *stack);
 
-/* Stack operations */
-int					stack_push(t_stack *stack, int value);
-int					stack_pop(t_stack *stack);
-int					stack_peek(t_stack *stack);
-int					stack_is_empty(t_stack *stack);
+/* Validation */
+int		parse_and_validate(t_stack *arr, int argc);
+int		validate_no_duplicates(t_stack *arr, int argc);
+int		validate_range(t_stack *arr, int argc);
+int		validate_arguments(int argc, char **argv);
+int		validate_format(char **a);
+int		ft_atoi_wcheck(char *str, t_stack *stack, char **args);
 
-/* Operations sa, sb, ss */
-void				op_sa(t_program *prog);
-void				op_sb(t_program *prog);
-void				op_ss(t_program *prog);
+/* Stack operations - Stack A */
+int		sa(t_stack *stack);
+int		ra(t_stack *stack);
+int		rra(t_stack *stack);
+int		pa(t_stack *arr);
 
-/* Operations pa, pb */
-void				op_pa(t_program *prog);
-void				op_pb(t_program *prog);
-
-/* Rotations ra, rb, rr */
-void				op_ra(t_program *prog);
-void				op_rb(t_program *prog);
-void				op_rr(t_program *prog);
-
-/* Reverse rotations rra, rrb, rrr */
-void				reverse_rotate_stack(t_stack *stack);
-void				op_rra(t_program *prog);
-void				op_rrb(t_program *prog);
-void				op_rrr(t_program *prog);
-void				rotate_stack(t_stack *stack);
+/* Stack operations - Stack B */
+int		rb(t_stack *stack);
+int		pb(t_stack *arr);
 
 /* Sorting */
-void				sort_stack(t_program *prog);
-void				sort_three(t_program *prog);
-void				sort_two(t_program *prog);
-void				index_stack(t_program *prog);
-void				sort_int_array(int *array, int size);
+void	sort_stack(t_stack *arr);
+void	sort_small_stack(t_stack *arr);
+void	sort_three_elements(t_stack *arr);
+void	sort_four_elements(t_stack *arr);
+void	sort_five_elements(t_stack *arr);
+void	radix_sort(t_stack *arr);
+void	radix_sort_b(t_stack *arr, int size, int bit_size, int bit);
+int		get_max_bits(int n);
 
 /* Utilities */
-int					is_sorted(t_stack *stack, t_program *prog);
-void				print_stacks(t_stack *a, t_stack *b);
-void				free_program(t_program *prog);
+int		is_sorted(t_stack *arr);
+void	free_stacks(t_stack *arr);
+void	free_split(char **split);
 
-/* Parser */
-int					parse_and_create(int argc, char **argv, t_program *prog);
-int					get_int_array(int argc, char **argv, int **array);
-int					is_valid_integer(const char *str);
-int					overflow_check(const char *str);
-int					has_duplicates(int *array, int size);
-int					str_to_int(const char *str);
-int					count_numbers(const char *str);
+/* LibFt functions (implement or include from libft) */
+char	**ft_split(char const *s, char c);
+int		ft_strlen(const char *s);
+int		ft_atoi(const char *str);
+
 #endif
