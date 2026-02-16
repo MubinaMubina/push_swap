@@ -6,7 +6,7 @@
 /*   By: mmubina <mmubina@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 01:27:07 by mmubina           #+#    #+#             */
-/*   Updated: 2026/02/13 01:27:25 by mmubina          ###   ########.fr       */
+/*   Updated: 2026/02/16 10:04:12 by mmubina          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int	parse_and_validate(t_stack *arr, int argc)
 		return (write(2, "Error\n", 6));
 	if (!validate_range(arr, argc))
 		return (write(2, "Error\n", 6));
-	if (is_sorted(arr))
+	if (arr->size_a > 1 && is_sorted(arr))
 		return (-1);
 	return (0);
 }
@@ -88,22 +88,17 @@ int	validate_format(char **a)
 	length = ft_strlen(a[1]);
 	if (length == 0)
 		return (0);
-	if ((a[1][i] == '-' || a[1][i] == '+') && a[1][i + 1] >= '0' && a[1][i
-		+ 1] <= '9')
-		i++;
 	while (i < length)
 	{
-		if (a[1][i] < '0' || a[1][i] > '9')
-		{
-			if (!a[1][i + 1])
-				return (0);
-			if (a[1][i] == ' ' && ((a[1][i + 1] >= '0' && a[1][i + 1] <= '9')
-					|| (a[1][i + 1] == '-' || a[1][i + 1] == '+')))
-				i++;
-			else
-				return (0);
-		}
-		i++;
+		if ((a[1][i] == '-' || a[1][i] == '+') && (++i >= length
+				|| (a[1][i] < '0' || a[1][i] > '9')))
+			return (0);
+		while (i < length && a[1][i] >= '0' && a[1][i] <= '9')
+			i++;
+		if (i >= length)
+			break ;
+		if (a[1][i] != ' ' || ++i >= length)
+			return (0);
 	}
 	return (1);
 }

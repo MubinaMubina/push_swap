@@ -6,7 +6,7 @@
 /*   By: mmubina <mmubina@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 01:58:20 by mmubina           #+#    #+#             */
-/*   Updated: 2026/02/13 01:59:35 by mmubina          ###   ########.fr       */
+/*   Updated: 2026/02/16 09:39:31 by mmubina          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,20 @@ void	special_init(char *str, t_stack *stack)
 	int		i;
 
 	args = ft_split(str, ' ');
+	if (!args)
+	{
+		write(2, "Error\n", 6);
+		exit(1);
+	}
 	i = 0;
 	while (args[i])
 		i++;
+	if (i == 0)
+	{
+		write(2, "Error\n", 6);
+		free_split(args);
+		exit(1);
+	}
 	initialize_stack(i, args - 1, stack, args);
 	free_split(args);
 }
@@ -41,9 +52,9 @@ static int	returning(long long result, t_stack *stack, char **args)
 
 int	ft_atoi_wcheck(char *str, t_stack *stack, char **args)
 {
-	int i;
-	int sign;
-	long long result;
+	int			i;
+	int			sign;
+	long long	result;
 
 	i = 0;
 	sign = 1;

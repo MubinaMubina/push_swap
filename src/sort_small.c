@@ -6,7 +6,7 @@
 /*   By: mmubina <mmubina@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 01:32:16 by mmubina           #+#    #+#             */
-/*   Updated: 2026/02/13 01:32:50 by mmubina          ###   ########.fr       */
+/*   Updated: 2026/02/16 09:39:51 by mmubina          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 
 void	sort_small_stack(t_stack *arr)
 {
+	if (arr->size_a == 1)
+		return ;
 	if (arr->size_a == 2)
 		sa(arr);
 	else if (arr->size_a == 3)

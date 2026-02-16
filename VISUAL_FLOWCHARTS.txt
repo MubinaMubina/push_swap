@@ -1,0 +1,490 @@
+================================================================================
+                      VISUAL FLOWCHARTS & DIAGRAMS
+================================================================================
+
+╔════════════════════════════════════════════════════════════════════════════╗
+║                          MAIN PROGRAM FLOW                                 ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+                              START
+                                │
+                                ▼
+                    ┌─────────────────────┐
+                    │  Validate Arguments │
+                    │  argc >= 2?         │
+                    │  argv[1] not empty? │
+                    └─────────────────────┘
+                         │         │
+                        NO       YES
+                         │         │
+                    ┌────▼──┐     └──────────────────┐
+                    │ Error │                        ▼
+                    └───────┘              ┌──────────────────┐
+                                          │ validate_format()│
+                                          │ (if argc==2)     │
+                                          │ validate_args()  │
+                                          │ (if argc>2)      │
+                                          └──────────────────┘
+                                               │      │
+                                              NO    YES
+                                               │      │
+                                          ┌────▼──┐  │
+                                          │ Error │  │
+                                          └───────┘  │
+                                                     ▼
+                                          ┌──────────────────┐
+                                          │ init_and_validate│
+                                          │ - malloc stack   │
+                                          │ - parse input    │
+                                          │ - check valid    │
+                                          └──────────────────┘
+                                               │      │
+                                            ERROR  VALID
+                                               │      │
+                                          ┌────▼──┐  │
+                                          │ Error │  │
+                                          └───────┘  │
+                                                     ▼
+                                          ┌──────────────────┐
+                                          │ size_a > 1?      │
+                                          └──────────────────┘
+                                               │      │
+                                              NO    YES
+                                               │      │
+                                               │      ▼
+                                               │  ┌──────────────────┐
+                                               │  │ is_sorted()?     │
+                                               │  └──────────────────┘
+                                               │      │        │
+                                               │     NO       YES
+                                               │      │        │
+                                               │      ▼        │
+                                               │  ┌────────────┐│
+                                               │  │convert_to_ ││
+                                               │  │indices()   ││
+                                               │  └────────────┘│
+                                               │      │         │
+                                               │      ▼         │
+                                               │  ┌──────────┐  │
+                                               │  │ size_a   │◄─┘
+                                               │  │ <= 5 ?   │
+                                               │  └──────────┘
+                                               │    │      │
+                                               │   YES    NO
+                                               │    │      │
+                                               │    ▼      ▼
+                                               │  ┌──────┐ ┌──────────┐
+                                               │  │small │ │radix_    │
+                                               │  │_sort │ │sort()    │
+                                               │  └──────┘ └──────────┘
+                                               │    │         │
+                                               └────┼─────────┘
+                                                    ▼
+                                          ┌──────────────────┐
+                                          │ free_stacks()    │
+                                          └──────────────────┘
+                                                    │
+                                                    ▼
+                                                  EXIT
+
+
+╔════════════════════════════════════════════════════════════════════════════╗
+║                     VALIDATION PIPELINE DETAIL                             ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+Input received: argv
+
+    ┌──────────────────────────────────────────┐
+    │ Step 1: validate_arguments() [argc>2]    │
+    │ ────────────────────────────────────     │
+    │ For each argument after program name:    │
+    │   1. Check for leading +/- (optional)    │
+    │   2. Check remaining chars are digits    │
+    │   3. Reject if doesn't match pattern     │
+    │                                          │
+    │ Pattern: [+|-]?[0-9]+                    │
+    │                                          │
+    │ ✓ Valid:   "123" "-45" "+67"             │
+    │ ✗ Invalid: "12a" "" "++5"                │
+    └──────────────────────────────────────────┘
+                         │
+                         ▼
+    ┌──────────────────────────────────────────┐
+    │ Step 2: validate_format() [argc==2]      │
+    │ ────────────────────────────────────     │
+    │ Check quoted string format:              │
+    │                                          │
+    │ Pattern: [+|-]?[0-9]+( [+|-]?[0-9]+)*    │
+    │                                          │
+    │ Components:                              │
+    │ • Optional sign (+/-)                    │
+    │ • One or more digits                     │
+    │ • May have spaces separating numbers     │
+    │ • Space must be followed by next number  │
+    │                                          │
+    │ ✓ Valid:   "1 2 3" "1 -2 3" "-5  10"    │
+    │ ✗ Invalid: "1  2" "1 2a" "1 2 "          │
+    └──────────────────────────────────────────┘
+                         │
+                         ▼
+    ┌──────────────────────────────────────────┐
+    │ Step 3: parse_and_validate()             │
+    │ ────────────────────────────────────     │
+    │                                          │
+    │ 3a. validate_no_duplicates()             │
+    │     ✗ Reject if any arr[i] == arr[j]    │
+    │                                          │
+    │ 3b. validate_range()                     │
+    │     ✗ Reject if value < -2^31 or        │
+    │       value > 2^31-1                     │
+    │                                          │
+    │ 3c. is_sorted()                          │
+    │     ✓ Return success (skip sort)         │
+    │     ✗ Continue to sorting                │
+    │                                          │
+    │ Returns:  0=valid, -1=sorted, 1=error   │
+    └──────────────────────────────────────────┘
+
+
+╔════════════════════════════════════════════════════════════════════════════╗
+║                      SORTING DECISION TREE                                 ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+                    Stack size_a = n
+                           │
+                ┌──────────┼──────────┐
+                │          │          │
+               n=1        2≤n≤5      n>5
+                │          │          │
+                ▼          ▼          ▼
+          Do Nothing   Sort Small   Radix Sort
+          (already     Stack         (binary-based
+           sorted)     (hardcoded)    sorting)
+
+SORT SMALL STACK (n ≤ 5):
+╔═════════════════════════════════════════════════════════════╗
+║                                                             ║
+║  Size 2: swap if a[0] > a[1]                               ║
+║  ────────────────────────────────                           ║
+║  [2,1] → sa → [1,2]                                         ║
+║  [1,2] → (nothing)                                          ║
+║                                                             ║
+║  Size 3: sort_three_elements()                              ║
+║  ──────────────────────────────                             ║
+║  Checks pattern:                                            ║
+║  • [0,1,2] → (sorted) do nothing                            ║
+║  • [0,2,1] → sa                                             ║
+║  • [1,0,2] → sa, rra                                        ║
+║  • [1,2,0] → sa, ra                                         ║
+║  • [2,0,1] → ra                                             ║
+║  • [2,1,0] → rra                                            ║
+║                                                             ║
+║  Size 4: sort_four_elements()                               ║
+║  ────────────────────────────                               ║
+║  1. Find minimum element                                    ║
+║  2. Rotate to bring minimum to a[0]                         ║
+║  3. pb (push to B)                                          ║
+║  4. sort_three_elements() on remaining                      ║
+║  5. pa (push back to A as minimum)                          ║
+║                                                             ║
+║  Size 5: sort_five_elements()                               ║
+║  ───────────────────────────                                ║
+║  1. Find minimum element                                    ║
+║  2. Efficiently rotate (ra or rra, pick shorter path)      ║
+║  3. pb (push to B)                                          ║
+║  4. sort_four_elements() on remaining                       ║
+║  5. pa (push back to A as minimum)                          ║
+║                                                             ║
+╚═════════════════════════════════════════════════════════════╝
+
+RADIX SORT (n > 5):
+╔═════════════════════════════════════════════════════════════╗
+║                                                             ║
+║  Input: [1, 3, 0, 2]   (already converted to indices)       ║
+║  Binary: [01, 11, 00, 10]                                   ║
+║  Bits to process: 2 (0 and 1)                               ║
+║                                                             ║
+║  ITERATION 1 (Bit 0):                                       ║
+║  ─────────────────────                                      ║
+║  For each element in A:                                     ║
+║    If bit0 == 0: push to B                                  ║
+║    If bit0 == 1: rotate A                                   ║
+║                                                             ║
+║  Process A=[1,3,0,2]:                                       ║
+║    1 (bit0=1): ra → A=[3,0,2,1], B=[]                      ║
+║    3 (bit0=1): ra → A=[0,2,1,3], B=[]                      ║
+║    0 (bit0=0): pb → A=[2,1,3], B=[0]                       ║
+║    2 (bit0=0): pb → A=[1,3], B=[2,0]                       ║
+║                                                             ║
+║  Now process B (bit1):                                      ║
+║    For each element in B:                                   ║
+║      If bit1 == 0: rotate B                                 ║
+║      If bit1 == 1: push back to A                           ║
+║                                                             ║
+║  Process B=[2,0]:                                           ║
+║    2 (bit1=1): pa → A=[2,1,3], B=[0]                       ║
+║    0 (bit1=0): rb → B=[0,2], A=[2,1,3]                     ║
+║                                                             ║
+║  ITERATION 2 (Bit 1):                                       ║
+║  ─────────────────────                                      ║
+║  Continue similar process for bit 1...                      ║
+║                                                             ║
+║  Final Result: A=[0,1,2,3] ✓ Sorted!                       ║
+║                                                             ║
+╚═════════════════════════════════════════════════════════════╝
+
+
+╔════════════════════════════════════════════════════════════════════════════╗
+║                   CONVERSION TO INDICES PROCESS                            ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+Original Input: [42, 100, 5, 99]
+Goal: Map to rank positions [1, 3, 0, 2]
+
+Step-by-step:
+─────────────
+
+Original:  [42, 100, 5, 99]
+temp:      [42, 100, 5, 99]
+indices:   [?, ?, ?, ?]
+
+Find min (5), assign rank 0:
+temp:      [42, 100, ∞, 99]
+indices:   [?, ?, 0, ?]
+
+Find min (42), assign rank 1:
+temp:      [∞, 100, ∞, 99]
+indices:   [1, ?, 0, ?]
+
+Find min (99), assign rank 2:
+temp:      [∞, 100, ∞, ∞]
+indices:   [1, ?, 0, 2]
+
+Find min (100), assign rank 3:
+temp:      [∞, ∞, ∞, ∞]
+indices:   [1, 3, 0, 2]
+
+Result in a[]:  [1, 3, 0, 2]
+
+Now radix_sort() can work with indices 0-3 instead of raw values!
+
+
+╔════════════════════════════════════════════════════════════════════════════╗
+║                    STACK OPERATIONS VISUALIZATION                          ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+Initial: A=[3,1,2] B=[]
+
+Operation: pb (push B)
+─────────────────────
+    BEFORE              AFTER
+    ┌─┐                ┌─┐
+    │3│                │1│
+    ├─┤                ├─┤
+    │1│  ───pb──→      │2│
+    ├─┤                ├─┤
+    │2│                └─┘
+    └─┘              A │
+    A │             
+      B              B  ┌─┐
+                        │3│
+                        └─┘
+
+Operation: rb (rotate B)
+────────────────────────
+    BEFORE              AFTER
+    ┌─┐                ┌─┐
+    │3│                │5│
+    ├─┤                ├─┤
+    │5│  ───rb──→      │3│
+    ├─┤                ├─┤
+    │2│                └─┘
+    └─┘
+    B │
+
+Operation: pa (push A)
+──────────────────────
+    BEFORE              AFTER
+    ┌─┐                ┌─┐
+    │1│                │5│
+    ├─┤                ├─┤
+    │2│  ───pa──→      │1│
+    └─┘                ├─┤
+    A │                │2│
+                       └─┘
+    ┌─┐                A │
+    │5│
+    ├─┤               B
+    │3│
+    └─┘
+    B │
+
+Operation: ra (rotate A)
+────────────────────────
+    BEFORE              AFTER
+    ┌─┐                ┌─┐
+    │3│                │1│
+    ├─┤                ├─┤
+    │1│  ───ra──→      │2│
+    ├─┤                ├─┤
+    │2│                │3│
+    └─┘                └─┘
+    A │                A │
+
+Operation: rra (reverse rotate A)
+──────────────────────────────────
+    BEFORE              AFTER
+    ┌─┐                ┌─┐
+    │3│                │2│
+    ├─┤                ├─┤
+    │1│  ───rra──→     │3│
+    ├─┤                ├─┤
+    │2│                │1│
+    └─┘                └─┘
+    A │                A │
+
+Operation: sa (swap A)
+──────────────────────
+    BEFORE              AFTER
+    ┌─┐                ┌─┐
+    │3│                │1│
+    ├─┤                ├─┤
+    │1│  ───sa──→      │3│
+    ├─┤                ├─┤
+    │2│                │2│
+    └─┘                └─┘
+    A │                A │
+
+
+╔════════════════════════════════════════════════════════════════════════════╗
+║                    COMPLETE EXAMPLE WALKTHROUGH                            ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+Command: ./push_swap 3 1 2
+
+PHASE 1: VALIDATION & PARSING
+──────────────────────────────
+Input:        argv = ["push_swap", "3", "1", "2"]
+argc:         3 (program + 2 numbers)
+
+validate_arguments("3", "1", "2"):
+  ✓ "3" is valid (digit)
+  ✓ "1" is valid (digit)
+  ✓ "2" is valid (digit)
+  Returns: 1
+
+initialize_stack(argc=3):
+  arr->a[0] = ft_atoi_wcheck("3") → 3
+  arr->a[1] = ft_atoi_wcheck("1") → 1
+  arr->a[2] = ft_atoi_wcheck("2") → 2
+  arr->size_a = 3
+
+State: A=[3,1,2] B=[]
+
+parse_and_validate():
+  ✓ No duplicates (3≠1≠2)
+  ✓ All in range (-2^31 to 2^31)
+  ✗ Not sorted (3 > 1)
+  Returns: 0 (continue to sort)
+
+PHASE 2: SORT DECISION
+──────────────────────
+arr->size_a = 3
+3 <= 5? YES → call sort_small_stack()
+
+PHASE 3: SORTING
+────────────────
+sort_small_stack():
+  size_a == 3 → call sort_three_elements()
+
+sort_three_elements():
+  first = 3, second = 1, third = 2
+  
+  Check conditions:
+    first > second? YES (3 > 1)
+    second < third? YES (1 < 2)
+    first > third? YES (3 > 2)
+    
+  Pattern: first > second && second < third && first > third
+  
+  Call: ra()
+    [3,1,2] → [1,2,3]
+    Output: "ra"
+
+PHASE 4: CLEANUP
+────────────────
+free_stacks(arr):
+  free(arr->a)
+  free(arr->b)
+  free(arr)
+
+FINAL OUTPUT: "ra"
+RESULT: [1,2,3] ✓
+
+
+╔════════════════════════════════════════════════════════════════════════════╗
+║                      MEMORY LIFECYCLE                                      ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+ALLOCATION SEQUENCE:
+──────────────────
+
+1. main() starts
+2. init_and_validate() called
+   ├─ malloc(t_stack) → arr
+   ├─ special_init() called (if argc==2)
+   │  ├─ ft_split() → allocates split_args
+   │  ├─ initialize_stack()
+   │  │  ├─ malloc(a) → arr->a
+   │  │  └─ malloc(b) → arr->b
+   │  └─ free_split(split_args)
+   │
+   └─ initialize_stack() called (if argc>2)
+      ├─ malloc(a) → arr->a
+      └─ malloc(b) → arr->b
+
+3. Sorting phase (if needed)
+   ├─ convert_to_indices()
+   │  ├─ malloc(indices)
+   │  ├─ malloc(temp)
+   │  ├─ ... processing ...
+   │  ├─ free(indices)
+   │  └─ free(temp)
+   │
+   └─ radix_sort() or sort_small_stack()
+      └─ No additional allocations
+
+4. Cleanup
+   └─ free_stacks()
+      ├─ free(arr->a)
+      ├─ free(arr->b)
+      └─ free(arr)
+
+KEY PRINCIPLE: Every malloc() has matching free()
+
+
+╔════════════════════════════════════════════════════════════════════════════╗
+║                     INTERCONNECTION SUMMARY                                ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+Input Validation Chain:
+  validate_arguments() → validate_format() → initialize_stack() →
+  → parse_and_validate() → is_sorted()
+
+Sorting Decision Chain:
+  size_a determination → convert_to_indices() (if needed) →
+  → sort_small_stack() OR radix_sort()
+
+Stack Operations Hierarchy:
+  Small Stack: sa, ra, rra, pa, pb
+  Radix Sort: pb, ra, rb, pa (with bit checking)
+
+Memory Management Pattern:
+  Allocate in: init_and_validate() + special_init()
+  Use in: sorting functions
+  Free in: convert_to_indices() (temporary) + free_stacks() (final)
+
+Data Flow:
+  Raw Input → Parsing → Validation → Conversion → Sorting → Output → Cleanup
+
+================================================================================

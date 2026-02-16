@@ -6,7 +6,7 @@
 /*   By: mmubina <mmubina@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/09 22:32:51 by mmubina           #+#    #+#             */
-/*   Updated: 2026/02/13 01:18:49 by mmubina          ###   ########.fr       */
+/*   Updated: 2026/02/16 09:38:32 by mmubina          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ static int	init_and_validate(int argc, char **argv, t_stack **arr)
 
 int	main(int argc, char **argv)
 {
-	t_stack *arr;
+	t_stack	*arr;
 
 	if (argc < 2 || argv[1][0] == '\0')
 		return (write(2, "Error\n", 6));
@@ -42,12 +42,15 @@ int	main(int argc, char **argv)
 		return (write(2, "Error\n", 6));
 	if (init_and_validate(argc, argv, &arr) != 0)
 		return (1);
-	if (!is_sorted(arr))
-		convert_to_indices(arr);
-	if (arr->size_a <= 5)
-		sort_small_stack(arr);
-	else
-		radix_sort(arr);
+	if (arr->size_a > 1)
+	{
+		if (!is_sorted(arr))
+			convert_to_indices(arr);
+		if (arr->size_a <= 5)
+			sort_small_stack(arr);
+		else
+			radix_sort(arr);
+	}
 	free_stacks(arr);
 	return (0);
 }
