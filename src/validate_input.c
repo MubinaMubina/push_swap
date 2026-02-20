@@ -6,7 +6,7 @@
 /*   By: mmubina <mmubina@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 01:27:07 by mmubina           #+#    #+#             */
-/*   Updated: 2026/02/16 10:04:12 by mmubina          ###   ########.fr       */
+/*   Updated: 2026/02/20 14:47:45 by mmubina          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ int	validate_no_duplicates(t_stack *arr, int argc)
 			if (arr->a[i] == arr->a[j])
 				return (0);
 			j++;
-		}
+		
 	}
 	return (1);
 }
