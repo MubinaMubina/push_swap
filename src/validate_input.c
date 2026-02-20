@@ -6,7 +6,7 @@
 /*   By: mmubina <mmubina@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 01:27:07 by mmubina           #+#    #+#             */
-/*   Updated: 2026/02/20 14:53:12 by mmubina          ###   ########.fr       */
+/*   Updated: 2026/02/20 17:21:55 by mmubina          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,6 @@ int	parse_and_validate(t_stack *arr, int argc)
 		return (write(2, "Error\n", 6));
 	if (!validate_range(arr, argc))
 		return (write(2, "Error\n", 6));
-	if (arr->size_a > 1 && is_sorted(arr))
-		return (-1);
 	return (0);
 }
 
@@ -38,7 +36,6 @@ int	validate_no_duplicates(t_stack *arr, int argc)
 				return (0);
 			j++;
 		}
-		return (1);
 	}
 	return (1);
 }

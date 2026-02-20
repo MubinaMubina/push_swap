@@ -16,7 +16,7 @@ static int	init_and_validate(int argc, char **argv, t_stack **arr)
 {
 	*arr = (t_stack *)malloc(sizeof(t_stack));
 	if (!*arr)
-		return (write(2, "Error\n", 6));
+		return (write(2, "Error\n", 6), 1);
 	if (argc == 2)
 		special_init(argv[1], *arr);
 	else
@@ -33,19 +33,20 @@ int	main(int argc, char **argv)
 {
 	t_stack	*arr;
 
-	if (argc < 2 || argv[1][0] == '\0')
-		return (write(2, "Error\n", 6));
+	if (argc < 2)
+		return (0);
+	if (argv[1][0] == '\0')
+		return (write(2, "Error\n", 6), 1);
 	if (argv[1][0] == ' ' && argv[1][1] == '\0')
-		return (write(2, "Error\n", 6));
+		return (write(2, "Error\n", 6), 1);
 	if ((!validate_arguments(argc, argv) && argc > 2)
 		|| validate_format(argv) == 0)
-		return (write(2, "Error\n", 6));
+		return (write(2, "Error\n", 6), 1);
 	if (init_and_validate(argc, argv, &arr) != 0)
 		return (1);
-	if (arr->size_a > 1)
+	if (arr->size_a > 1 && !is_sorted(arr))
 	{
-		if (!is_sorted(arr))
-			convert_to_indices(arr);
+		convert_to_indices(arr);
 		if (arr->size_a <= 5)
 			sort_small_stack(arr);
 		else
